@@ -22,7 +22,7 @@ if not ZOHO_EMAIL or not ZOHO_PASSWORD:
 # Function to set up the Chrome WebDriver with headless mode
 def get_driver():
     options = Options()
-    # options.add_argument("--headless")  # Headless mode (no UI)
+    options.add_argument("--headless")  # Headless mode (no UI)
     options.add_argument("--disable-gpu")  # Disable GPU hardware acceleration
     options.add_argument("--no-sandbox")  # Disable sandboxing (necessary for CI environments)
     
