@@ -1,7 +1,5 @@
 import time
 import os
-import tempfile
-import shutil
 from selenium import webdriver
 from selenium.webdriver.common.by import By
 from selenium.webdriver.common.keys import Keys
@@ -24,18 +22,13 @@ if not ZOHO_EMAIL or not ZOHO_PASSWORD:
 # Function to set up the Chrome WebDriver with headless mode
 def get_driver():
     options = Options()
-    
-    # Generate a unique user-data directory
-    user_data_dir = tempfile.mkdtemp()
-    options.add_argument(f"--user-data-dir={user_data_dir}")  # Specify unique user data directory
-
+    # options.add_argument("--headless")  # Headless mode (no UI)
     options.add_argument("--disable-gpu")  # Disable GPU hardware acceleration
     options.add_argument("--no-sandbox")  # Disable sandboxing (necessary for CI environments)
     
     # Setup ChromeDriver (it will automatically download the appropriate driver using webdriver-manager)
     driver = webdriver.Chrome(service=Service(ChromeDriverManager().install()), options=options)
-    
-    return driver, user_data_dir  # Return driver and user_data_dir to clean up later
+    return driver
 
 # Function to login to Zoho portal
 def login_to_zoho(driver):
@@ -83,21 +76,19 @@ def check_out(driver):
 
 # Main function to log in and perform check-in or check-out
 def main(action):
-    driver, user_data_dir = get_driver()  # Setup the WebDriver and unique user data dir
-    try:
-        login_to_zoho(driver)  # Login to Zoho
+    driver = get_driver()  # Setup the WebDriver
+    login_to_zoho(driver)  # Login to Zoho
 
-        if action == 'checkin':
-            print('Let\'s Checkin')
-            check_in(driver)
-        elif action == 'checkout':
-            print('Let\'s Checkout')
-            check_out(driver)
-        else:
-            print("Invalid action!")
-    finally:
-        driver.quit()  # Close the browser after the task is complete
-        shutil.rmtree(user_data_dir)  # Clean up the temporary user data directory
+    if action == 'checkin':
+        print('Let\'s Checkin')
+        check_in(driver)
+    elif action == 'checkout':
+        print('Let\'s Checkout')
+        check_out(driver)
+    else:
+        print("Invalid action!")
+
+    driver.quit()  # Close the browser after the task is complete
 
 if __name__ == "__main__":
     import sys
