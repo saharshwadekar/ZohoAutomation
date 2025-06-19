@@ -55,9 +55,7 @@ def check_in(driver):
 
     try:
         # Wait for the check-in button to be visible and clickable
-        checkin_button = WebDriverWait(driver, 30).until(
-            EC.visibility_of_element_located((By.XPATH, '//button[@id="ZPAtt_check_in_out"]'))
-        )
+        checkin_button =driver.findElement(By.jQuery('$("#ZPAtt_check_in_out")'))
         # Click the check-in button
         checkin_button.click()
         print(f"Check-in successful at {datetime.now(pytz.timezone('Asia/Kolkata'))}")
@@ -71,9 +69,8 @@ def check_out(driver):
 
     try:
         # Wait for the check-out button to be visible and clickable
-        checkout_button = WebDriverWait(driver, 30).until(
-            EC.visibility_of_element_located((By.XPATH, '//button[@id="ZPAtt_check_in_out"]'))
-        )
+        checkout_button =driver.findElement(By.jQuery('$("#ZPAtt_check_in_out")'))
+        
         # Click the check-out button
         checkout_button.click()
         print(f"Check-out successful at {datetime.now(pytz.timezone('Asia/Kolkata'))}")
