@@ -55,18 +55,21 @@ def check_in(driver):
 
     time.sleep(5)  # Wait for the page to load
 
-    # Wait until the check-in button is clickable (adjust the ID if necessary)
-    checkin_button = WebDriverWait(driver, 20).until(
-        EC.element_to_be_clickable((By.ID, 'ZPAtt_check_in_out'))
+    # Wait until the check-in button is visible and clickable (increase timeout for better reliability)
+    checkin_button = WebDriverWait(driver, 40).until(
+        EC.visibility_of_element_located((By.XPATH, '//*[@id="ZPAtt_check_in_out"]'))  # Use XPath to locate the button
     )
 
-    # Check the button text and click accordingly
-    button_text = checkin_button.find_element(By.XPATH, './div/p').text  # Get text inside <p> tag
-    if button_text == "Check-in":
-        checkin_button.click()
-        print(f"Check-in successful at {datetime.now(pytz.timezone('Asia/Kolkata'))}")
-    else:
-        print("Check-in button is not available. It's currently showing Check-out.")
+    # Check the button text (Check-in or Check-out)
+    try:
+        button_text = checkin_button.find_element(By.XPATH, './div/p').text  # Get text inside <p> tag
+        if button_text == "Check-in":
+            checkin_button.click()
+            print(f"Check-in successful at {datetime.now(pytz.timezone('Asia/Kolkata'))}")
+        else:
+            print(f"Button state is '{button_text}'. No action taken.")
+    except Exception as e:
+        print(f"Error while reading the button text: {e}")
 
 # Function to perform check-out at 7:45 PM IST
 def check_out(driver):
@@ -75,18 +78,21 @@ def check_out(driver):
 
     time.sleep(5)  # Wait for the page to load
 
-    # Wait until the check-out button is clickable (adjust the ID if necessary)
-    checkout_button = WebDriverWait(driver, 20).until(
-        EC.element_to_be_clickable((By.ID, 'ZPAtt_check_in_out'))
+    # Wait until the check-out button is visible and clickable (increase timeout for better reliability)
+    checkout_button = WebDriverWait(driver, 40).until(
+        EC.visibility_of_element_located((By.XPATH, '//*[@id="ZPAtt_check_in_out"]'))  # Use XPath to locate the button
     )
 
-    # Check the button text and click accordingly
-    button_text = checkout_button.find_element(By.XPATH, './div/p').text  # Get text inside <p> tag
-    if button_text == "Check-out":
-        checkout_button.click()
-        print(f"Check-out successful at {datetime.now(pytz.timezone('Asia/Kolkata'))}")
-    else:
-        print("Check-out button is not available. It's currently showing Check-in.")
+    # Check the button text (Check-in or Check-out)
+    try:
+        button_text = checkout_button.find_element(By.XPATH, './div/p').text  # Get text inside <p> tag
+        if button_text == "Check-out":
+            checkout_button.click()
+            print(f"Check-out successful at {datetime.now(pytz.timezone('Asia/Kolkata'))}")
+        else:
+            print(f"Button state is '{button_text}'. No action taken.")
+    except Exception as e:
+        print(f"Error while reading the button text: {e}")
 
 # Main function to log in and perform check-in or check-out
 def main(action):
