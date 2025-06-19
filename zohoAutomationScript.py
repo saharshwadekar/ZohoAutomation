@@ -55,9 +55,8 @@ def check_in(driver):
 
     try:
         # Wait for the check-in button to be visible and clickable
-        checkin_button =driver.findElement(By.jQuery('$("#ZPAtt_check_in_out")'))
-        # Click the check-in button
-        checkin_button.click()
+        button = driver.find_element(By.XPATH, "/html[1]/body[1]/div[6]/div[7]/div[1]/div[2]/div[1]/div[1]/div[2]/div[1]/div[1]/div[1]/div[3]/button[1]")
+        button.click()
         print(f"Check-in successful at {datetime.now(pytz.timezone('Asia/Kolkata'))}")
     except Exception as e:
         print(f"Error while reading or clicking the button: {e}")
@@ -69,10 +68,8 @@ def check_out(driver):
 
     try:
         # Wait for the check-out button to be visible and clickable
-        checkout_button =driver.findElement(By.jQuery('$("#ZPAtt_check_in_out")'))
-        
-        # Click the check-out button
-        checkout_button.click()
+        button = driver.find_element(By.XPATH, "/html[1]/body[1]/div[6]/div[7]/div[1]/div[2]/div[1]/div[1]/div[2]/div[1]/div[1]/div[1]/div[3]/button[1]")
+        button.click()
         print(f"Check-out successful at {datetime.now(pytz.timezone('Asia/Kolkata'))}")
     except Exception as e:
         print(f"Error while reading or clicking the button: {e}")
