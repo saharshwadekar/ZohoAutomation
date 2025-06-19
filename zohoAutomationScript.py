@@ -55,7 +55,7 @@ def check_in(driver):
 
     try:
         # Wait for the check-in button to be visible and clickable
-        button = driver.find_element(By.XPATH, "//button[@id='ZPAtt_check_in_out']")  # Using XPath to locate the button
+        button = driver.find_element(By.ID, "ZPAtt_check_in_out")  # Using XPath to locate the button
         print("Check-in Button found:", button)  # Debugging line to check if element is found
         button.click()
         print(f"Check-in successful at {datetime.now(pytz.timezone('Asia/Kolkata'))}")
@@ -69,7 +69,7 @@ def check_out(driver):
 
     try:
         # Wait for the check-out button to be visible and clickable
-        button = driver.find_element(By.XPATH, "//button[@id='ZPAtt_check_in_out']")  # Using XPath to locate the button
+        button = driver.find_element(By.ID, "ZPAtt_check_in_out")  # Using XPath to locate the button
         print("Check-out Button found:", button)  # Debugging line to check if element is found
         button.click()
         print(f"Check-out successful at {datetime.now(pytz.timezone('Asia/Kolkata'))}")
