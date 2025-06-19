@@ -56,7 +56,7 @@ def check_in(driver):
     time.sleep(5)  # Wait for the page to load
 
     # Wait until the check-in button is visible and clickable (increase timeout for better reliability)
-    checkin_button = WebDriverWait(driver, 40).until(
+    checkin_button = WebDriverWait(driver, 200).until(
         EC.visibility_of_element_located((By.XPATH, '//*[@id="ZPAtt_check_in_out"]'))  # Use XPath to locate the button
     )
 
@@ -79,7 +79,7 @@ def check_out(driver):
     time.sleep(5)  # Wait for the page to load
 
     # Wait until the check-out button is visible and clickable (increase timeout for better reliability)
-    checkout_button = WebDriverWait(driver, 40).until(
+    checkout_button = WebDriverWait(driver, 200).until(
         EC.visibility_of_element_located((By.XPATH, '//*[@id="ZPAtt_check_in_out"]'))  # Use XPath to locate the button
     )
 
