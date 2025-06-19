@@ -55,7 +55,7 @@ def check_in(driver):
     time.sleep(5) 
     print('DRIVER : ',driver);
     try:
-        button_text = driver.find_element(By.Id, 'ZPAtt_check_in_out').text  # Get text inside <p> tag
+        button_text = driver.find_element(By.ID, 'ZPAtt_check_in_out').text  # Get text inside <p> tag
         button_text.click()
         print(f"Check-out successful at {datetime.now(pytz.timezone('Asia/Kolkata'))}")
     except Exception as e:
@@ -68,7 +68,7 @@ def check_out(driver):
     time.sleep(5) 
 
     try:
-        button_text = driver.find_element(By.Id, 'ZPAtt_check_in_out').text  # Get text inside <p> tag
+        button_text = driver.find_element(By.ID, 'ZPAtt_check_in_out').text  # Get text inside <p> tag
         button_text.click()
         print(f"Check-out successful at {datetime.now(pytz.timezone('Asia/Kolkata'))}")
     except Exception as e:
