@@ -22,7 +22,7 @@ if not ZOHO_EMAIL or not ZOHO_PASSWORD:
 # Function to set up the Chrome WebDriver with headless mode
 def get_driver():
     options = Options()
-    options.add_argument("--headless")  # Headless mode (no UI)
+    # options.add_argument("--headless")  # Headless mode (no UI)
     options.add_argument("--disable-gpu")  # Disable GPU hardware acceleration
     options.add_argument("--no-sandbox")  # Disable sandboxing (necessary for CI environments)
     
@@ -55,7 +55,7 @@ def check_in(driver):
 
     try:
         # Wait for the check-in button to be visible and clickable
-        button = driver.find_element(By.XPATH, "/html[1]/body[1]/div[6]/div[7]/div[1]/div[2]/div[1]/div[1]/div[2]/div[1]/div[1]/div[1]/div[3]/button[1]")
+        button = driver.find_element(By.xpath("//button[@id='ZPAtt_check_in_out']"))
         button.click()
         print(f"Check-in successful at {datetime.now(pytz.timezone('Asia/Kolkata'))}")
     except Exception as e:
@@ -68,7 +68,7 @@ def check_out(driver):
 
     try:
         # Wait for the check-out button to be visible and clickable
-        button = driver.find_element(By.XPATH, "/html[1]/body[1]/div[6]/div[7]/div[1]/div[2]/div[1]/div[1]/div[2]/div[1]/div[1]/div[1]/div[3]/button[1]")
+        button = driver.find_element(By.xpath("//button[@id='ZPAtt_check_in_out']"))
         button.click()
         print(f"Check-out successful at {datetime.now(pytz.timezone('Asia/Kolkata'))}")
     except Exception as e:
