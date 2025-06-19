@@ -50,47 +50,27 @@ def login_to_zoho(driver):
 
 # Function to perform check-in at 9:45 AM IST
 def check_in(driver):
-    # Navigate to the Zoho check-in page (you will need the actual URL here)
-    driver.get('https://people.zoho.in/dealermatix/zp#home/myspace/overview-actionlist')  # Replace with actual check-in URL
-
-    time.sleep(5)  # Wait for the page to load
-
-    # Wait until the check-in button is visible and clickable (increase timeout for better reliability)
-    checkin_button = WebDriverWait(driver, 200).until(
-        EC.visibility_of_element_located((By.XPATH, '//*[@id="ZPAtt_check_in_out"]'))  # Use XPath to locate the button
-    )
-
-    # Check the button text (Check-in or Check-out)
+   
+    driver.get('https://people.zoho.in/dealermatix/zp#home/myspace/overview-actionlist')  #
+    time.sleep(5) 
+    print('DRIVER : ',driver);
     try:
-        button_text = checkin_button.find_element(By.XPATH, './div/p').text  # Get text inside <p> tag
-        if button_text == "Check-in":
-            checkin_button.click()
-            print(f"Check-in successful at {datetime.now(pytz.timezone('Asia/Kolkata'))}")
-        else:
-            print(f"Button state is '{button_text}'. No action taken.")
+        button_text = driver.find_element(By.Id, 'ZPAtt_check_in_out').text  # Get text inside <p> tag
+        button_text.click()
+        print(f"Check-out successful at {datetime.now(pytz.timezone('Asia/Kolkata'))}")
     except Exception as e:
         print(f"Error while reading the button text: {e}")
 
 # Function to perform check-out at 7:45 PM IST
 def check_out(driver):
-    # Navigate to the Zoho check-out page (you will need the actual URL here)
-    driver.get('https://people.zoho.in/dealermatix/zp#home/myspace/overview-actionlist')  # Replace with actual check-out URL
+    
+    driver.get('https://people.zoho.in/dealermatix/zp#home/myspace/overview-actionlist')  #
+    time.sleep(5) 
 
-    time.sleep(5)  # Wait for the page to load
-
-    # Wait until the check-out button is visible and clickable (increase timeout for better reliability)
-    checkout_button = WebDriverWait(driver, 200).until(
-        EC.visibility_of_element_located((By.XPATH, '//*[@id="ZPAtt_check_in_out"]'))  # Use XPath to locate the button
-    )
-
-    # Check the button text (Check-in or Check-out)
     try:
-        button_text = checkout_button.find_element(By.XPATH, './div/p').text  # Get text inside <p> tag
-        if button_text == "Check-out":
-            checkout_button.click()
-            print(f"Check-out successful at {datetime.now(pytz.timezone('Asia/Kolkata'))}")
-        else:
-            print(f"Button state is '{button_text}'. No action taken.")
+        button_text = driver.find_element(By.Id, 'ZPAtt_check_in_out').text  # Get text inside <p> tag
+        button_text.click()
+        print(f"Check-out successful at {datetime.now(pytz.timezone('Asia/Kolkata'))}")
     except Exception as e:
         print(f"Error while reading the button text: {e}")
 
@@ -100,15 +80,16 @@ def main(action):
     login_to_zoho(driver)  # Login to Zoho
 
     if action == 'checkin':
+        print('Let\'s Checkin');
         check_in(driver)
     elif action == 'checkout':
+        print('Let\'s Checkout');
         check_out(driver)
     else:
         print("Invalid action!")
 
-    driver.quit()  # Close the browser after the task is complete
+    driver.quit()  
 
-# Run the script for check-in or check-out based on an argument (this will be used by GitHub Actions)
 if __name__ == "__main__":
     import sys
     action = sys.argv[1] if len(sys.argv) > 1 else None
