@@ -50,29 +50,35 @@ def login_to_zoho(driver):
 
 # Function to perform check-in at 9:45 AM IST
 def check_in(driver):
-   
     driver.get('https://people.zoho.in/dealermatix/zp#home/myspace/overview-actionlist')  #
-    time.sleep(5) 
-    print('DRIVER : ',driver);
+    time.sleep(5)  # Wait for the page to load
+
     try:
-        button_text = driver.find_element(By.ID, 'ZPAtt_check_in_out')  # Get text inside <p> tag
-        button_text.click()
-        print(f"Check-out successful at {datetime.now(pytz.timezone('Asia/Kolkata'))}")
+        # Wait for the check-in button to be visible and clickable
+        checkin_button = WebDriverWait(driver, 30).until(
+            EC.visibility_of_element_located((By.XPATH, '//button[@id="ZPAtt_check_in_out"]'))
+        )
+        # Click the check-in button
+        checkin_button.click()
+        print(f"Check-in successful at {datetime.now(pytz.timezone('Asia/Kolkata'))}")
     except Exception as e:
-        print(f"Error while reading the button text: {e}")
+        print(f"Error while reading or clicking the button: {e}")
 
 # Function to perform check-out at 7:45 PM IST
 def check_out(driver):
-    
     driver.get('https://people.zoho.in/dealermatix/zp#home/myspace/overview-actionlist')  #
-    time.sleep(5) 
+    time.sleep(5)  # Wait for the page to load
 
     try:
-        button_text = driver.find_element(By.ID, 'ZPAtt_check_in_out')  # Get text inside <p> tag
-        button_text.click()
+        # Wait for the check-out button to be visible and clickable
+        checkout_button = WebDriverWait(driver, 30).until(
+            EC.visibility_of_element_located((By.XPATH, '//button[@id="ZPAtt_check_in_out"]'))
+        )
+        # Click the check-out button
+        checkout_button.click()
         print(f"Check-out successful at {datetime.now(pytz.timezone('Asia/Kolkata'))}")
     except Exception as e:
-        print(f"Error while reading the button text: {e}")
+        print(f"Error while reading or clicking the button: {e}")
 
 # Main function to log in and perform check-in or check-out
 def main(action):
@@ -80,15 +86,15 @@ def main(action):
     login_to_zoho(driver)  # Login to Zoho
 
     if action == 'checkin':
-        print('Let\'s Checkin');
+        print('Let\'s Checkin')
         check_in(driver)
     elif action == 'checkout':
-        print('Let\'s Checkout');
+        print('Let\'s Checkout')
         check_out(driver)
     else:
         print("Invalid action!")
 
-    driver.quit()  
+    driver.quit()  # Close the browser after the task is complete
 
 if __name__ == "__main__":
     import sys
