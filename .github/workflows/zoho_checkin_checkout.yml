@@ -1,0 +1,39 @@
+name: Zoho Check-In and Check-Out Automation
+
+on:
+  schedule:
+    - cron: '45 9 * * *' # 9:45 AM UTC (convert to IST by adding 5:30 hours)
+    - cron: '45 19 * * *' # 7:45 PM UTC (convert to IST by adding 5:30 hours)
+  push:
+    branches:
+      - main
+
+jobs:
+  automation:
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v2
+
+    - name: Set up Python
+      uses: actions/setup-python@v2
+      with:
+        python-version: '3.9'  # Specify the Python version
+
+    - name: Install dependencies
+      run: |
+        python -m pip install --upgrade pip
+        pip install selenium webdriver-manager
+
+    - name: Run check-in script
+      run: |
+        export ZOHO_EMAIL=${{ secrets.ZOHO_EMAIL }}
+        export ZOHO_PASSWORD=${{ secrets.ZOHO_PASSWORD }}
+        python zohoAutomationScript.py checkin  # Run the script with 'checkin' argument
+
+    - name: Run check-out script
+      run: |
+        export ZOHO_EMAIL=${{ secrets.ZOHO_EMAIL }}
+        export ZOHO_PASSWORD=${{ secrets.ZOHO_PASSWORD }}
+        python zohoAutomationScript.py checkout  # Run the script with 'checkout' argument
