@@ -8,6 +8,8 @@ from selenium.webdriver.chrome.service import Service
 from webdriver_manager.chrome import ChromeDriverManager
 import pytz
 from datetime import datetime
+from selenium.webdriver.support.ui import WebDriverWait
+from selenium.webdriver.support import expected_conditions as EC
 
 # Fetch the email and password from environment variables (set in GitHub Secrets)
 ZOHO_EMAIL = os.getenv('ZOHO_EMAIL')
@@ -53,11 +55,18 @@ def check_in(driver):
 
     time.sleep(5)  # Wait for the page to load
 
-    # Find and click the check-in button (inspect and get the correct element ID)
-    checkin_button = driver.find_element(By.ID, 'ZPAtt_check_in_out')  # Change with actual element ID
-    checkin_button.click()
+    # Wait until the check-in button is clickable (adjust the ID if necessary)
+    checkin_button = WebDriverWait(driver, 20).until(
+        EC.element_to_be_clickable((By.ID, 'ZPAtt_check_in_out'))
+    )
 
-    print(f"Check-in successful at {datetime.now(pytz.timezone('Asia/Kolkata'))}")
+    # Check the button text and click accordingly
+    button_text = checkin_button.find_element(By.XPATH, './div/p').text  # Get text inside <p> tag
+    if button_text == "Check-in":
+        checkin_button.click()
+        print(f"Check-in successful at {datetime.now(pytz.timezone('Asia/Kolkata'))}")
+    else:
+        print("Check-in button is not available. It's currently showing Check-out.")
 
 # Function to perform check-out at 7:45 PM IST
 def check_out(driver):
@@ -66,11 +75,18 @@ def check_out(driver):
 
     time.sleep(5)  # Wait for the page to load
 
-    # Find and click the check-out button (inspect and get the correct element ID)
-    checkout_button = driver.find_element(By.ID, 'ZPAtt_check_in_out')  # Change with actual element ID
-    checkout_button.click()
+    # Wait until the check-out button is clickable (adjust the ID if necessary)
+    checkout_button = WebDriverWait(driver, 20).until(
+        EC.element_to_be_clickable((By.ID, 'ZPAtt_check_in_out'))
+    )
 
-    print(f"Check-out successful at {datetime.now(pytz.timezone('Asia/Kolkata'))}")
+    # Check the button text and click accordingly
+    button_text = checkout_button.find_element(By.XPATH, './div/p').text  # Get text inside <p> tag
+    if button_text == "Check-out":
+        checkout_button.click()
+        print(f"Check-out successful at {datetime.now(pytz.timezone('Asia/Kolkata'))}")
+    else:
+        print("Check-out button is not available. It's currently showing Check-in.")
 
 # Main function to log in and perform check-in or check-out
 def main(action):
