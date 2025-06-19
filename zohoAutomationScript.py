@@ -1,0 +1,98 @@
+import time
+import os
+from selenium import webdriver
+from selenium.webdriver.common.by import By
+from selenium.webdriver.common.keys import Keys
+from selenium.webdriver.chrome.options import Options
+from selenium.webdriver.chrome.service import Service
+from webdriver_manager.chrome import ChromeDriverManager
+import pytz
+from datetime import datetime
+
+# Fetch the email and password from environment variables (set in GitHub Secrets)
+ZOHO_EMAIL = os.getenv('ZOHO_EMAIL')
+ZOHO_PASSWORD = os.getenv('ZOHO_PASSWORD')
+
+# Ensure the credentials are set
+if not ZOHO_EMAIL or not ZOHO_PASSWORD:
+    raise ValueError("Zoho email or password not set in environment variables.")
+
+# Function to set up the Chrome WebDriver with headless mode
+def get_driver():
+    options = Options()
+    options.add_argument("--headless")  # Headless mode (no UI)
+    options.add_argument("--disable-gpu")  # Disable GPU hardware acceleration
+    options.add_argument("--no-sandbox")  # Disable sandboxing (necessary for CI environments)
+    
+    # Setup ChromeDriver (it will automatically download the appropriate driver using webdriver-manager)
+    driver = webdriver.Chrome(service=Service(ChromeDriverManager().install()), options=options)
+    return driver
+
+# Function to login to Zoho portal
+def login_to_zoho(driver):
+    driver.get('https://accounts.zoho.in/signin?servicename=zohopeople&signupurl=https://www.zoho.com/people/signup.html')
+    time.sleep(2)  # Wait for page to load
+
+    # Find the login fields and enter credentials
+    email_field = driver.find_element(By.ID, "login_id")
+    email_field.send_keys(ZOHO_EMAIL)
+    email_field.send_keys(Keys.RETURN)
+    time.sleep(5)  # Wait for the password field to load
+
+    password_field = driver.find_element(By.ID, "password")
+    password_field.send_keys(ZOHO_PASSWORD)
+    password_field.send_keys(Keys.RETURN)
+    time.sleep(5)  # Wait for login to complete
+
+    print("Successfully logged in!")
+
+# Function to perform check-in at 9:45 AM IST
+def check_in(driver):
+    # Navigate to the Zoho check-in page (you will need the actual URL here)
+    driver.get('https://people.zoho.in/dealermatix/zp#home/myspace/overview-actionlist')  # Replace with actual check-in URL
+
+    time.sleep(5)  # Wait for the page to load
+
+    # Find and click the check-in button (inspect and get the correct element ID)
+    checkin_button = driver.find_element(By.ID, 'ZPAtt_check_in_out')  # Change with actual element ID
+    checkin_button.click()
+
+    print(f"Check-in successful at {datetime.now(pytz.timezone('Asia/Kolkata'))}")
+
+# Function to perform check-out at 7:45 PM IST
+def check_out(driver):
+    # Navigate to the Zoho check-out page (you will need the actual URL here)
+    driver.get('https://people.zoho.in/dealermatix/zp#home/myspace/overview-actionlist')  # Replace with actual check-out URL
+
+    time.sleep(5)  # Wait for the page to load
+
+    # Find and click the check-out button (inspect and get the correct element ID)
+    checkout_button = driver.find_element(By.ID, 'ZPAtt_check_in_out')  # Change with actual element ID
+    checkout_button.click()
+
+    print(f"Check-out successful at {datetime.now(pytz.timezone('Asia/Kolkata'))}")
+
+# Main function to log in and perform check-in or check-out
+def main(action):
+    driver = get_driver()  # Setup the WebDriver
+    login_to_zoho(driver)  # Login to Zoho
+
+    if action == 'checkin':
+        check_in(driver)
+    elif action == 'checkout':
+        check_out(driver)
+    else:
+        print("Invalid action!")
+
+    driver.quit()  # Close the browser after the task is complete
+
+# Run the script for check-in or check-out based on an argument (this will be used by GitHub Actions)
+if __name__ == "__main__":
+    import sys
+    action = sys.argv[1] if len(sys.argv) > 1 else None
+    
+    if not action:
+        print("Please specify 'checkin' or 'checkout' as an argument")
+        sys.exit(1)
+
+    main(action)
