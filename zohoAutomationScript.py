@@ -1,9 +1,7 @@
 import time
 import os
-import tempfile
-import shutil
 from selenium import webdriver
-from selenium.webdriver.common.by import By  # Make sure this is imported
+from selenium.webdriver.common.by import By
 from selenium.webdriver.common.keys import Keys
 from selenium.webdriver.chrome.options import Options
 from selenium.webdriver.chrome.service import Service
@@ -57,7 +55,8 @@ def check_in(driver):
 
     try:
         # Wait for the check-in button to be visible and clickable
-        button = driver.find_element(By.XPATH("//button[@id='ZPAtt_check_in_out']"))
+        button = driver.find_element(By.XPATH, "//button[@id='ZPAtt_check_in_out']")  # Using XPath to locate the button
+        print("Check-in Button found:", button)  # Debugging line to check if element is found
         button.click()
         print(f"Check-in successful at {datetime.now(pytz.timezone('Asia/Kolkata'))}")
     except Exception as e:
@@ -70,7 +69,8 @@ def check_out(driver):
 
     try:
         # Wait for the check-out button to be visible and clickable
-        button = driver.find_element(By.XPATH("//button[@id='ZPAtt_check_in_out']"))
+        button = driver.find_element(By.XPATH, "//button[@id='ZPAtt_check_in_out']")  # Using XPath to locate the button
+        print("Check-out Button found:", button)  # Debugging line to check if element is found
         button.click()
         print(f"Check-out successful at {datetime.now(pytz.timezone('Asia/Kolkata'))}")
     except Exception as e:
