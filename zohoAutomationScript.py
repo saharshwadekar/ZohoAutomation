@@ -54,6 +54,8 @@ def check_in(driver):
     time.sleep(5)  # Wait for the page to load
 
     try:
+        page_source = driver.page_source
+        print(page_source)
         # Wait for the check-in button to be visible and clickable
         button = driver.find_element(By.ID, "ZPAtt_check_in_out")  # Using XPath to locate the button
         print("Check-in Button found:", button)  # Debugging line to check if element is found
@@ -68,6 +70,8 @@ def check_out(driver):
     time.sleep(5)  # Wait for the page to load
 
     try:
+        page_source = driver.page_source
+        print(page_source)
         # Wait for the check-out button to be visible and clickable
         button = driver.find_element(By.ID, "ZPAtt_check_in_out")  # Using XPath to locate the button
         print("Check-out Button found:", button)  # Debugging line to check if element is found
