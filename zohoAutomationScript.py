@@ -8,100 +8,104 @@ from selenium.webdriver.chrome.service import Service
 from webdriver_manager.chrome import ChromeDriverManager
 import pytz
 from datetime import datetime
-from selenium.webdriver.support.ui import WebDriverWait
-from selenium.webdriver.support import expected_conditions as EC
 
-# Fetch the email and password from environment variables (set in GitHub Secrets)
+# Fetch the email and password from environment variables
 ZOHO_EMAIL = os.getenv('ZOHO_EMAIL')
 ZOHO_PASSWORD = os.getenv('ZOHO_PASSWORD')
 
-# Ensure the credentials are set
+# Ensure credentials are set
 if not ZOHO_EMAIL or not ZOHO_PASSWORD:
     raise ValueError("Zoho email or password not set in environment variables.")
 
-# Function to set up the Chrome WebDriver with headless mode
+# Function to set up Chrome WebDriver with headless mode and fake location
 def get_driver():
     options = Options()
-    options.add_argument("--headless")  # Headless mode (no UI)
-    options.add_argument("--disable-gpu")  # Disable GPU hardware acceleration
-    options.add_argument("--no-sandbox")  # Disable sandboxing (necessary for CI environments)
-    
-    # Setup ChromeDriver (it will automatically download the appropriate driver using webdriver-manager)
+    options.add_argument("--headless=new")  # Use new headless mode
+    options.add_argument("--disable-gpu")
+    options.add_argument("--no-sandbox")
+    options.add_argument("--disable-dev-shm-usage")
+    options.add_argument("--disable-blink-features=AutomationControlled")
+    options.add_experimental_option("excludeSwitches", ["enable-automation"])
+    options.add_experimental_option("useAutomationExtension", False)
+
     driver = webdriver.Chrome(service=Service(ChromeDriverManager().install()), options=options)
+
+    # Emulate location: Bharat Bhavan, Baner, Pune
+    params = {
+        "latitude": 18.5591,
+        "longitude": 73.7864,
+        "accuracy": 100
+    }
+    driver.execute_cdp_cmd("Page.enable", {})
+    driver.execute_cdp_cmd("Emulation.setGeolocationOverride", params)
+
     return driver
 
-# Function to login to Zoho portal
+# Function to log in to Zoho
 def login_to_zoho(driver):
     driver.get('https://accounts.zoho.in/signin?servicename=zohopeople&signupurl=https://www.zoho.com/people/signup.html')
     time.sleep(2)  # Wait for page to load
 
-    # Find the login fields and enter credentials
     email_field = driver.find_element(By.ID, "login_id")
     email_field.send_keys(ZOHO_EMAIL)
     email_field.send_keys(Keys.RETURN)
-    time.sleep(5)  # Wait for the password field to load
+    time.sleep(3)
 
     password_field = driver.find_element(By.ID, "password")
     password_field.send_keys(ZOHO_PASSWORD)
     password_field.send_keys(Keys.RETURN)
-    time.sleep(5)  # Wait for login to complete
+    time.sleep(7)
 
-    print("Successfully logged in!")
+    print("Successfully logged in.")
 
-# Function to perform check-in at 9:45 AM IST
+# Function to perform check-in
 def check_in(driver):
-    driver.get('https://people.zoho.in/dealermatix/zp#home/myspace/overview-actionlist')  #
-    time.sleep(5)  # Wait for the page to load
+    driver.get('https://people.zoho.in/dealermatix/zp#home/myspace/overview-actionlist')
+    time.sleep(6)
 
     try:
-        page_source = driver.page_source
-        print(page_source)
-        # Wait for the check-in button to be visible and clickable
-        button = driver.find_element(By.ID, "ZPAtt_check_in_out")  # Using XPath to locate the button
-        print("Check-in Button found:", button)  # Debugging line to check if element is found
+        button = driver.find_element(By.ID, "ZPAtt_check_in_out")
         button.click()
-        print(f"Check-in successful at {datetime.now(pytz.timezone('Asia/Kolkata'))}")
+        print(f"✅ Check-in successful at {datetime.now(pytz.timezone('Asia/Kolkata'))}")
     except Exception as e:
-        print(f"Error while reading or clicking the button: {e}")
+        print(f"❌ Check-in failed: {e}")
 
-# Function to perform check-out at 7:45 PM IST
+# Function to perform check-out
 def check_out(driver):
-    driver.get('https://people.zoho.in/dealermatix/zp#home/myspace/overview-actionlist')  #
-    time.sleep(5)  # Wait for the page to load
+    driver.get('https://people.zoho.in/dealermatix/zp#home/myspace/overview-actionlist')
+    time.sleep(6)
 
     try:
-        page_source = driver.page_source
-        print(page_source)
-        # Wait for the check-out button to be visible and clickable
-        button = driver.find_element(By.ID, "ZPAtt_check_in_out")  # Using XPath to locate the button
-        print("Check-out Button found:", button)  # Debugging line to check if element is found
+        button = driver.find_element(By.ID, "ZPAtt_check_in_out")
         button.click()
-        print(f"Check-out successful at {datetime.now(pytz.timezone('Asia/Kolkata'))}")
+        print(f"✅ Check-out successful at {datetime.now(pytz.timezone('Asia/Kolkata'))}")
     except Exception as e:
-        print(f"Error while reading or clicking the button: {e}")
+        print(f"❌ Check-out failed: {e}")
 
-# Main function to log in and perform check-in or check-out
+# Main function
 def main(action):
-    driver = get_driver()  # Setup the WebDriver
-    login_to_zoho(driver)  # Login to Zoho
+    driver = get_driver()
+    try:
+        login_to_zoho(driver)
 
-    if action == 'checkin':
-        print('Let\'s Checkin')
-        check_in(driver)
-    elif action == 'checkout':
-        print('Let\'s Checkout')
-        check_out(driver)
-    else:
-        print("Invalid action!")
+        if action == 'checkin':
+            print("📍 Attempting check-in...")
+            check_in(driver)
+        elif action == 'checkout':
+            print("📍 Attempting check-out...")
+            check_out(driver)
+        else:
+            print("⚠️ Invalid action! Use 'checkin' or 'checkout'.")
+    finally:
+        driver.quit()
 
-    driver.quit()  # Close the browser after the task is complete
-
+# Entry point
 if __name__ == "__main__":
     import sys
     action = sys.argv[1] if len(sys.argv) > 1 else None
-    
+
     if not action:
-        print("Please specify 'checkin' or 'checkout' as an argument")
+        print("⚠️ Please specify 'checkin' or 'checkout' as an argument")
         sys.exit(1)
 
     main(action)
