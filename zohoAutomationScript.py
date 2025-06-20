@@ -62,8 +62,16 @@ def login_to_zoho(driver):
 def check_in(driver):
     driver.get('https://people.zoho.in/dealermatix/zp#home/myspace/overview-actionlist')
     time.sleep(6)
-    page_source = driver.page_source
-    print(page_source)
+    filename = f"zoho_page_now.html"
+    output_path = os.path.join("output", filename)
+    
+    # Ensure output directory exists
+    os.makedirs("output", exist_ok=True)
+    
+    with open(output_path, "w", encoding="utf-8") as f:
+        f.write(driver.page_source)
+    
+    print(f"✅ Page source saved to: {output_path}")
     try:
         button = driver.find_element(By.ID, "ZPAtt_check_in_out")
         button.click()
