@@ -62,7 +62,8 @@ def login_to_zoho(driver):
 def check_in(driver):
     driver.get('https://people.zoho.in/dealermatix/zp#home/myspace/overview-actionlist')
     time.sleep(6)
-
+    page_source = driver.page_source
+    print(page_source)
     try:
         button = driver.find_element(By.ID, "ZPAtt_check_in_out")
         button.click()
